@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" >
+{% load static %}
+
+{# Load the tag library #}
+{% load bootstrap4 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+<!--{% bootstrap_javascript jquery='full' %}-->
+<link href="{% static 'survey/DataTables/datatables.css' %}" rel="stylesheet">
+<link href="{% static 'survey/bootstrap/black-dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'survey/custom.css' %}" rel="stylesheet">
+
+<script type="text/javascript" src="{% static 'survey/jquery/jquery-3.5.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'survey/DataTables/datatables.js' %}"></script>
+
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+        {% block script %}
+        {% endblock %}
+
+
+<head>
+  <meta charset="UTF-8">
+  <title>Test</title>
+
+
+</head>
+
+<div id="loading" class="loading_off">
+</div>
+  <h1 align="center">SURVEY TAMER</h1>
+  <hr>
+
+{% block body %}
+{% endblock %}
+
+
+</html>

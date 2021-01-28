@@ -1,0 +1,384 @@
+{% extends "survey/layout.html" %}
+{% load static %}
+{% load custom_tags %}
+{% block script %}
+    <script src="{% static 'survey/index.js' %}"></script>
+{% endblock %}
+
+
+
+
+{% block body %}
+
+<div class="col-sm-5" style="float:left">
+
+<button id="submit" type="button" class="btn btn-default action-button btn-primary" onclick="labels_on()">Submit survey</button>
+<hr>
+<div id="survey_structure" class="shiny-html-output"></div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script id="setaudiences" type="text/html">
+<br>
+    <div class="audience_block">
+   <input type=button value="remove" class="btn btn-danger" onclick="remove_audience(this)">
+   <input type=button id="audience_blocks" value="add block" class="btn btn-primary" onclick="add_audience_blocks(this)">
+  <input class="au_name btn btn-outline-secondary" type=text   placeholder="audience name" size="10"/>
+
+
+
+ <span tooltip="Without spaces and special symbols">
+ <input class="block_var_name btn btn-outline-secondary" type=text  placeholder="variable" size="5"/>
+ </span>
+
+  <select class = "block_operator btn-primary btn-group">
+  <option value="equal1">=</option>
+  <option value="more">></option>
+    <option value="moreequal">>=</option>
+  <option value="less"><</option>
+    <option value="lessequal"><=</option>
+  <option value="notequal">!=</option>
+  </select>
+
+<input class="block_var_value btn btn-outline-primary" type=text placeholder="value" size="5"/>
+<span tooltip="Add more fields to specify Audience">
+<input type=button value="add params" class="btn btn-primary" onclick="add_audience_params(this)">
+</span>
+</div>
+<br>
+</script>
+
+
+<script id="audience_details" type="text/html">
+   <div class="audience_detail">
+  <br>
+   <select class="audience_add_type btn-primary btn-group">
+    <option value = "AND">AND</option>
+    <option value = "OR">OR</option>
+ </select>
+
+ <span tooltip="Without spaces and special symbols">
+ <input class="var_name btn btn-outline-secondary" type=text  placeholder="variable" size="5"/>
+ </span>
+
+  <select class = "operator btn-primary btn-group">
+  <option value="equal1">=</option>
+  <option value="more">></option>
+    <option value="moreequal">>=</option>
+  <option value="less"><</option>
+    <option value="lessequal"><=</option>
+  <option value="notequal">!=</option>
+  </select>
+
+<input class="var_value btn btn-outline-primary" type=text placeholder="value" size="5"/>
+
+
+<span tooltip="Add more fields to specify Audience">
+<input type=button value="add params" class="btn btn-primary" onclick="add_audience_params(this)">
+</span>
+
+
+<input type=button value="remove" class="btn btn-danger" onclick="remove_params(this)">
+
+<br>
+  </div>
+</script>
+
+
+
+<script id="audience_blocks" type="text/html">
+   <div class="audience_block">
+  <br>
+   <select class="block_operand btn-primary btn-group">
+    <option value = "AND">AND</option>
+    <option value = "OR">OR</option>
+ </select>
+ <br>
+ <span tooltip="Without spaces and special symbols">
+ <input class="block_var_name btn btn-outline-secondary" type=text  placeholder="variable" size="5"/>
+ </span>
+
+  <select class = "block_operator btn-primary btn-group">
+  <option value="equal1">=</option>
+  <option value="more">></option>
+    <option value="moreequal">>=</option>
+  <option value="less"><</option>
+    <option value="lessequal"><=</option>
+  <option value="notequal">!=</option>
+  </select>
+
+<input class="block_var_value btn btn-outline-primary" type=text placeholder="value" size="5"/>
+
+
+<span tooltip="Add more fields to specify Audience">
+<input type=button value="add params" class="btn btn-primary" onclick="add_audience_params(this)">
+</span>
+
+<br>
+<input type=button value = "remove block" class="btn btn-danger" onclick="remove_params(this)">
+
+  </div>
+</script>
+
+
+
+
+
+
+<h4 id=AGroups>Audiences' groups</h4>
+
+<br>
+<br>
+<input type="button" id="test2" value="add audience" class="btn btn-primary" onclick="add_audience();">
+<br>
+
+<br>
+<input type=button class="btn btn-primary" id="get_audiences" value="Sumbit audiences" onclick="get_audiences()"/>
+<br>
+
+
+<div id=AGroups_table name=AGroups_table>Audiences table</div>
+
+<hr>
+<br>
+
+<h4 id=QGroups>Questions groups</h4>
+
+
+<br>
+<input type="button" id="test1" value="add group" class="btn btn-primary" onclick="add_fields();">
+
+
+
+
+
+
+
+<script id="ordinal_all" type="text/html">
+<div>
+<br>
+<span tooltip="Should all possible answers be placed in different rows (yes) or aggregated to one (no)" flow="right">
+
+<select class="show_all btn btn-info btn-group" onchange="add_ordinals(this)">
+<option value="yes">yes</option>
+<option value="no">no</option>
+</span>
+</select>
+
+<label for ".show_all">Show all choices separately?</label>
+<br>
+</div>
+</script>
+
+
+
+
+
+
+<script id="ordinal_details" type="text/html">
+<div class="ordinal_detail">
+  <br>
+
+<label for=".top_bottom">Aggregation direction: </label>
+<span tooltip = "Affects only names of rows, doesn't affect calculations">
+<select class="top_bottom btn-primary btn-group">
+<option value="top">top</option>
+<option value="bottom">bottom</option>
+</span>
+</select>
+
+<span tooltip = "how many answer choices aggregate">
+<label for ".treshold">Treshold</label>
+<input class="treshold btn btn-outline-primary" type=text placeholder="2" size="3"/>
+</span>
+
+<span tooltip="Max number in answer choices"  >
+<label for ".max">Max value</label>
+<input class="max btn btn-outline-primary" type=text placeholder="5" size="3"/>
+</span>
+
+<span tooltip="Values to exclude in order not to affect calculations. For example, answers like 'don't know' usually are coded as 99">
+<label for ".exclude">Values to exclude</label>
+<input class="exclude btn btn-outline-primary" type=text placeholder="99" size="3"/>
+</span>
+
+ <label for ".recode">Opposite scale</label>
+<select class="recode btn-primary btn-group">
+<option value="yes">yes</option>
+<option value="no">no</option>
+</select>
+<br>
+</div>
+</script>
+
+
+
+
+
+
+<script id="setgroups" type="text/html">
+<div class="block">
+  <br>
+  <input type=button value="remove" class = "btn btn-danger" onclick="remove_group(this)">
+  <input type=button value="add block" class="btn btn-primary" onclick="add_blocks(this)">
+
+  <span tooltip="Type of question depends on both question and how it is stored in base &#10 Use binary if there is only one possible value in column and 0/NA; &#10   Ordinal - if there are several possible answers and they are comparable (worse/better);  &#10  Multiple Choice - if several values are possible but they are incomparable"
+  style="width:500px !important">
+    <select class="questiontype btn-primary btn-group" onchange="show_ordinals()" >
+  <option value="binary">Binary</option>
+<option value="ordinal">Ordinal</option>
+<option value="multiplechoice">Multiple choice</option>
+  </select>
+  </span>
+  <input class="gr_name btn btn-outline-primary" type=text size="10" placeholder="group name"/>
+   <select class="block_containsornot btn-primary btn-group">
+  <option value="grepl">contain</option>
+  <option value="ngrepl">not contain</option>
+</select>
+<input class="block_defvalue btn btn-outline-primary" type=text size="5" placeholder="value">
+ <input type=button id="params" value="add fields" class="btn btn-primary" onclick="add_params(this)">
+<br>
+</div>
+</script>
+
+
+<script id="group_details" type="text/html">
+  <div class="group_detail">
+  <br>
+  <span tooltip="Level of rule according to previous one ">
+</span>
+   <select class="add_type btn-primary btn-group">
+    <option value = "AND">AND</option>
+    <option value = "OR">OR</option>
+   </select>
+    <select class="containsornot btn-primary btn-group">
+  <option value="grepl">contain</option>
+  <option value="ngrepl">not contain</option>
+</select>
+<input class="defvalue btn btn-outline-primary" type=text size="5" placeholder="value">
+<input type=button value="add fields" class="btn btn-primary" onclick="add_params(this)">
+<input type=button value="remove" class="btn btn-danger" onclick="remove_params(this)">
+   <br>
+   </div>
+</script>
+
+
+
+<script id="blocks" type="text/html">
+  <div class="block">
+  <br>
+     <select class="block_operand btn-primary btn-group">
+    <option value = "AND">AND</option>
+    <option value = "OR">OR</option>
+ </select>
+  <br>
+
+      <select class="block_containsornot btn-primary btn-group">
+  <option value="grepl">contain</option>
+  <option value="ngrepl">not contain</option>
+</select>
+<input class="block_defvalue btn btn-outline-primary" type=text size="5" placeholder="value">
+<input type=button value="add fields" class="btn btn-primary" onclick="add_params(this)">
+<input type=button value="remove" class="btn btn-danger" onclick="remove_params(this)">
+  </div>
+</script>
+
+
+
+<br>
+ <div id="ordinals"></div>
+<br>
+
+
+
+
+<div id=QGroups_table name=QGroups_table></div>
+
+
+<br>
+<input type=button class="btn btn-primary" id="get_groups" value="Sumbit groups" onclick="get_groups()"/>
+<br>
+
+<hr>
+<h4>Row groupping</h4>
+
+  <span tooltip="Optional field. Add names of variables by which rows should be groupped" flow="right">
+  <textarea id = "row_group" style="width:100%">
+    </textarea>
+</span>
+  <br>
+  <span tooltip="Should be first row-grouping variable's values used as output table header?" flow="right">
+    <select "btn-primary btn-group" id = to_spread>
+      <option value=TRUE>yes</option>
+      <option value=FALSE>no</option>
+    </select>
+</span>
+
+
+<input type=button id="get_rows_groups" class="btn btn-primary btn-primary" value="Submit row groupping" onclick="get_rows_groups()"/>
+
+
+
+
+<br>
+<br>
+<button id="run" type="button" class="btn btn-default action-button btn btn-primary btn-lg">GET REPORT</button>
+
+
+<br>
+<br>
+ </div>
+
+<div class="col-sm-7" style="float:right">
+
+  <ul class="nav nav-pills">
+    <li  class="nav-item" onclick="labels_on()"><a id="labels_tab" class="nav-link active" data-toggle="tab" href="#survey_labels">SURVEY STRUCTURE</a></li>
+    <li class="nav-item" onclick="output_on()"><a id="output_tab" class="nav-link" data-toggle="tab" href="#summary">OUTPUT</a></li>
+  </ul>
+  <hr>
+
+<table id="var_table">
+    <thead>
+        <tr>
+            <th>Variable</th>
+            <th>Label</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for key, val in var_labels.items %}
+        <tr>
+        {% if key in val_labels %}
+            <td>
+                <div class ="btn-link">
+                {{ key }}
+                {% get_val val_labels key as x %}
+                  <div class="dropdown-content">
+                      {% for key, val in x.items %}
+                        <a href="#">{{ key }}: {{ val }}</a>
+                      {% endfor %}
+                  </div>
+                </div>
+            </td>
+            {% else %}
+            <td> {{ key }} </td>
+        {% endif %}
+            </td>
+            <td>{{ val }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>$(document).ready(function () {
+    $.noConflict();
+    var table = $('#var_table').DataTable();
+});
+</script>
+
+
+
+</div>
+
+{% endblock %}
