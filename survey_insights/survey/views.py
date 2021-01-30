@@ -18,6 +18,7 @@ def upload_file(request):
         if form.is_valid():
             path = request.FILES['file'].name
             df, var_labels, val_labels = read_file(path)
+            print("read succesfully")
             return render(request, "survey/run.html", {"df": df,
                                                        "var_labels": var_labels,
                                                        "val_labels": val_labels})

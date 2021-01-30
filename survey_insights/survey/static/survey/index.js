@@ -33,20 +33,20 @@ function add_audience(){
 
   setAttributes(audience_name, {"type": "text",
                                 "placeholder": "audience name",
-                                "class": "block_var_value btn btn-outline-primary",
+                                "class": "au_name block_var_value btn btn-outline-primary",
                                 "size": 10});
 
   setAttributes(var_name, {"type": "text",
                            "placeholder": "variable name",
-                          "class": "block_var_value btn btn-outline-primary",
+                          "class": "var_name btn btn-outline-primary var_name",
                           "size": 5});
 
   setAttributes(var_value, {"type": "text",
                             "placeholder": "variable value",
-                           "class": "block_var_value btn btn-outline-primary",
+                           "class": "var_value btn btn-outline-primary var_value",
                            "size": 5});
 
-  setAttributes(operator, {"class": "block_operator btn-primary btn-group"})
+  setAttributes(operator, {"class": "var_operator btn-primary btn-group operator"})
   add_options(operator, [">", "<", "==", "!="]);
 
   setAttributes(add_param, {"type": "button",
@@ -64,9 +64,163 @@ function add_audience(){
 
 }
 
+function add_audience_params(elem){
+  const audience = elem.closest(".audience_block");
+  const container = document.createElement("div")
+  const remove_param = document.createElement("input");
+  const param_operator = document.createElement("select");
+  const var_name = document.createElement("input");
+  const var_value = document.createElement("input");
+  const operator = document.createElement("select");
+  const add_param = document.createElement("input")
+
+  setAttributes(container, {"class": "audience_param"})
+
+  setAttributes(remove_param, {"type": "button",
+                                "value": "remove param",
+                                "class": "btn btn-danger",
+                                "onclick": "remove_parent_block(this, '.audience_param')"});
+
+  setAttributes(param_operator, {"class": "block_operator btn-primary btn-group"})
+  add_options(param_operator, ["AND", "OR"]);
+
+ setAttributes(var_name, {"type": "text",
+                          "placeholder": "variable name",
+                          "class": "var_name btn btn-outline-primary",
+                          "size": 5});
+
+  setAttributes(var_value, {"type": "text",
+                            "placeholder": "variable value",
+                           "class": "var_value btn btn-outline-primary",
+                           "size": 5});
+
+  setAttributes(operator, {"class": "var_operator btn-primary btn-group"})
+  add_options(operator, [">", "<", "==", "!="]);
+
+  setAttributes(add_param, {"type": "button",
+                             "value": "add params",
+                             "class": "btn btn-primary",
+                             "onclick": "add_audience_params(this)"});
+
+  container.append(remove_param);
+  container.append(param_operator);
+  container.append(var_name);
+  container.append(operator);
+  container.append(var_value);
+  container.append(add_param);
+  audience.append(container);
+
+}
+
+function add_group(){
+  const gr = document.getElementById("QGroups");
+  const container = document.createElement("div");
+  const remove_group = document.createElement("input");
+  const add_block = document.createElement("input");
+  const var_type = document.createElement("select");
+  const group_name = document.createElement("input");
+  const contain = document.createElement("select");
+  const value = document.createElement("input");
+  const add_field = document.createElement("input");
+
+  setAttributes(container, {"class": "group_block"});
+
+  setAttributes(var_type, {"class": "questiontype btn-primary btn-group"})
+  add_options(var_type, ["Binary", "Ordinal", "Multiple choice"]);
+
+  setAttributes(contain, {"class": "questiontype btn-primary btn-group"})
+  add_options(contain, ["contain", "not contain"]);
+
+  setAttributes(remove_group, {"type": "button",
+                               "value": "remove group",
+                               "class": "btn btn-danger",
+                               "onclick": "remove_parent_block(this, '.group_block')"});
+
+  setAttributes(add_block, {"type": "button",
+                               "value": "add block",
+                               "class": "add_block btn btn-primary",
+                               "onclick": "add_group_block(this, '.group_block', 'outer')"});
+
+  setAttributes(add_field, {"type": "button",
+                               "value": "add_field",
+                               "class": "add_field btn btn-primary",
+                               "onclick": "add_group_block(this, '.group_block', 'inner')"});
+
+  setAttributes(group_name, {"type": "text",
+                                "placeholder": "group name",
+                                "class": "gr_name btn btn-outline-primary",
+                                "size": 10});
+
+  setAttributes(value, {"type": "text",
+                        "placeholder": "value",
+                        "class": "value btn btn-outline-primary",
+                        "size": 10});
+
+  container.append(remove_group);
+  container.append(add_block);
+  container.append(add_field);
+  container.append(var_type);
+  container.append(group_name);
+  container.append(contain);
+  container.append(value);
+  gr.append(container);
 
 
 
+}
+
+
+function add_group_block(elem, parent_class, type){
+  console.log(parent_class)
+  const group_block = elem.closest(parent_class);
+  const container = document.createElement("div");
+  const block_operator = document.createElement("select");
+  const contain = document.createElement("select");
+  const value = document.createElement("input");
+  const add_field = document.createElement("input");
+  const remove_group_block = document.createElement("input");
+
+  if (type=='inner'){
+    setAttributes(container, {"class": "inner_field"});
+  } else {
+    setAttributes(container, {"class": "outer_field"});
+  }
+
+
+
+  setAttributes(block_operator, {"class": "block_operator btn-primary btn-group"})
+  add_options(block_operator, ["AND", "OR"]);
+
+  setAttributes(contain, {"class": "questiontype btn-primary btn-group"})
+  add_options(contain, ["contain", "not contain"]);
+
+  setAttributes(add_field, {"type": "button",
+                               "value": "add_field",
+                               "class": "add_field btn btn-primary",
+                               "onclick": `add_group_block(this, '${parent_class}', 'inner')`});
+
+  setAttributes(value, {"type": "text",
+                        "placeholder": "value",
+                        "class": "value btn btn-outline-primary",
+                        "size": 10});
+
+  setAttributes(remove_group_block, {"type": "button",
+                               "value": "remove block",
+                               "class": "btn btn-danger",
+                               "onclick": `remove_parent_block(this, '${parent_class}')`});
+
+
+  container.append(block_operator);
+  container.append(contain);
+  container.append(add_field);
+  container.append(remove_group_block);
+  group_block.append(container);
+
+
+
+}
+
+/************* */
 
 
 function makeCounter() {
@@ -93,102 +247,11 @@ function makeCounter() {
 
 var counter = makeCounter();
 
-function add_fields() {
-  var qgr = document.getElementById('QGroups');
-  var div = document.createElement('div');
-// elem.parentNode.insertAdjacentHTML('beforeend', document.getElementById('content').innerHTML);
-//  div.id = "content-"+counter.getNext();
-  div.innerHTML=document.getElementById('setgroups').innerHTML;
-  var body = document.querySelector('body');
-  qgr.appendChild(div);
-}
-
-
-function add_audience_fields() {
-  var qgr = document.getElementById('AGroups');
-  var div = document.createElement('div');
-  div.innerHTML=document.getElementById('setaudiences').innerHTML;
-  var body = document.querySelector('body');
-  qgr.appendChild(div);
-}
-
-
-
-
-
-function add_params(elem) {
-  var div = document.createElement('div');
-  elem.parentNode.insertAdjacentHTML('beforeend', document.getElementById('group_details').innerHTML);
-  var body = document.querySelector('body');
-  body.appendChild(div);
-}
-function add_blocks(elem) {
-  var div = document.createElement('div');
-  elem.parentNode.insertAdjacentHTML('afterend', document.getElementById('blocks').innerHTML);
-   var body = document.querySelector('body');
-  body.appendChild(div);
-}
-
-function add_audience_params(elem){
-  const audience = elem.closest(".audience_block");
-  const container = document.createElement("div")
-  const remove_param = document.createElement("input");
-  const param_operator = document.createElement("select");
-  const var_name = document.createElement("input");
-  const var_value = document.createElement("input");
-  const operator = document.createElement("select");
-  const add_param = document.createElement("input")
-
-  setAttributes(container, {"class": "audience_param"})
-
-  setAttributes(remove_param, {"type": "button",
-                                "value": "remove param",
-                                "class": "btn btn-danger",
-                                "onclick": "remove_parent_block(this, '.audience_param')"});
-
-  setAttributes(param_operator, {"class": "block_operator btn-primary btn-group"})
-  add_options(param_operator, ["AND", "OR"]);
-
- setAttributes(var_name, {"type": "text",
-                          "placeholder": "variable name",
-                          "class": "block_var_value btn btn-outline-primary",
-                          "size": 5});
-
-  setAttributes(var_value, {"type": "text",
-                            "placeholder": "variable value",
-                           "class": "block_var_value btn btn-outline-primary",
-                           "size": 5});
-
-  setAttributes(operator, {"class": "block_operator btn-primary btn-group"})
-  add_options(operator, [">", "<", "==", "!="]);
-
-  setAttributes(add_param, {"type": "button",
-                             "value": "add params",
-                             "class": "btn btn-primary",
-                             "onclick": "add_audience_params(this)"});
-
-  container.append(remove_param);
-  container.append(param_operator);
-  container.append(var_name);
-  container.append(operator);
-  container.append(var_value);
-  container.append(add_param);
-  audience.append(container);
-
-}
-
-
-function add_audience_blocks(elem) {
-  var div = document.createElement('div');
-  elem.parentNode.insertAdjacentHTML('afterend', document.getElementById('audience_blocks').innerHTML);
-  var body = document.querySelector('body');
-  body.appendChild(div);
-}
 
 function convert_details(y){
-  
+
   var output="";
-  
+
   if (y==="inner"){
     output="( ";} else if(y==="outer") {
     output=" ) ";} else if (y==="equal"){
@@ -202,9 +265,9 @@ function convert_details(y){
     output=" <= ";}else if (y==="notequal"){
     output=" != ";} else if (y==="AND"){
     output=" AND ";} else if (y=="OR"){
-    output=" OR ";  
+    output=" OR ";
     }
-      
+
     
  return output;
 }
@@ -339,10 +402,6 @@ function show_ordinals(){
       }}}
 
 
-
-
-
-
 function add_ordinals(elem){
   if(elem.value=='no'){
   var div = document.createElement('div');
@@ -399,78 +458,64 @@ function add_ordinals(elem){
   
 function get_audiences(){
  
-  var source=document.getElementById("AGroups").children;
   var table = document.getElementById("AGroups_table");
   var content="";
-  
-  
+
   if(document.getElementById("AGroups").childElementCount===0){
     alert("No audience defined: default is all respondents");
-    table.innerHTML="";} else {//if no audience defined, alert, else - draw table of audiences
+    table.innerHTML="";
+    } else {
+    let source = document.querySelectorAll(".audience_block")
+    //if no audience defined, alert, else - draw table of audiences
 
- content='<tr><th>Audience</th><th>Specification</th></tr>' ;//form header of table
+    content='<tr><th>Audience</th><th>Specification</th></tr>' ;//form header of table
 
-  for(i=0; i<source.length; i++){               //#loop trough each audience
-  
- 
-  
-    content+='<tr><td>'; //open concatenation of html-content of table
-    content+=source[i].querySelector(".au_name").value;
-    content+='</td><td>'; //close first column and open second
- 
-    //content+=source[i].querySelector(".var_name").value+convert_details(source///[i].querySelector(".operator").value)
-///    +add_quotes(source[i].querySelector(".var_value").value);//add first ///part of definition    
-    
+    for(i=0; i<source.length; i++){//#loop trough each audience
+        console.log(i)
+        console.log(content)
+        console.log(source[i])
+        content+='<tr><td>'; //open concatenation of html-content of table
+        content+=source[i].querySelector(".au_name").value;
+        content+='</td><td>'; //close first column and open second
+        console.log(content)
+        var add_block = source[i].querySelectorAll(".audience_block"); //get all blocks
+        console.log(add_block)
+        for(j=0; j<add_block.length;j++){ //loop trought each block
+            if(j>0){
+            var block_operand = add_block[j].querySelector(".block_operand");
+            } else {
+            var block_operand=""
+            }
+       // get operand of block
+       console.log("!!!!")
+       var block_varname = source[i].querySelector(".block_var_name"); //get all connections in block
+       var block_operator = source[i].querySelector(".block_operator"); //get all operators in block
+       var block_varvalue = source[i].querySelector(".block_var_value"); //get all operators in block
+       var operand = source[i].querySelector(".block_operand")
 
-  var add_block = source[i].querySelectorAll(".audience_block"); //get all blocks
-
-  
-
-      
-
-      for(j=0; j<add_block.length;j++){ //loop trought each block
-        
-        if(j>0){var block_operand = add_block[j].querySelector(".block_operand");} else {var block_operand=""}
-   // get operand of block 
-   var block_varname = add_block[j].querySelector(".block_var_name"); //get all connections in block
-   var block_operator = add_block[j].querySelector(".block_operator"); //get all operators in block
-   var block_varvalue = add_block[j].querySelector(".block_var_value"); //get all operators in block
-
- 
-   
-   content+=convert_details(block_operand.value)+
+       content+=convert_details(block_operand.value)+
                   "("+block_varname.value+convert_details(block_operator.value)+
-                  add_quotes(block_varvalue.value); //add defintion from block 
-    
-    
-    var add_params = add_block[j].querySelectorAll(".audience_detail"); //get all details in block
-    
-    if(add_params.length>0){
-    for(k=0;k<add_params.length;k++){
-  var add_type = add_params[k].querySelector(".audience_add_type"); //get all types in block 
-   var varname = add_params[k].querySelector(".var_name"); //get all connections in block
-   var operator = add_params[k].querySelector(".operator"); //get all operators in block
-   var varvalue = add_params[k].querySelector(".var_value"); //get all operators in block
-  
-content+=convert_details(add_type.value)+varname.value+convert_details(operator.value)+add_quotes(varvalue.value);
+                  add_quotes(block_varvalue.value); //add defintion from block
+        console.log(content)
+
+      var add_params = add_block[j].querySelectorAll(".audience_detail"); //get all details in block
+      if(add_params.length>0){
+      for(k=0;k<add_params.length;k++){
+          var add_type = add_params[k].querySelector(".audience_add_type"); //get all types in block
+          var varname = add_params[k].querySelector(".var_name"); //get all connections in block
+          var operator = add_params[k].querySelector(".operator"); //get all operators in block
+          var varvalue = add_params[k].querySelector(".var_value"); //get all operators in block
+
+          content+=convert_details(add_type.value)+varname.value+convert_details(operator.value)+add_quotes(varvalue.value);
       
     }}
     
     content+=" )";
-    
       }
-      
     content+='</td></tr>';
-    
     }
- 
-
   }
-  
   table.innerHTML="<table>"+content+"</table>";
-    Shiny.onInputChange("Audiences", table.innerHTML);
-  
-  
 }
 
 function remove_params(elem) {
